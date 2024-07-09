@@ -1,0 +1,85 @@
+/* NotFoundPage.css */
+
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 94vh;
+    text-align: center;
+    background-color: #f0f2f5;
+}
+
+.not-found-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.not-found-computer {
+    max-width: 380px;
+    margin-bottom: 30px;
+}
+
+.not-found-404 {
+    max-width: 160px;
+    margin-bottom: 32px;
+    position: absolute;
+}
+
+.custom-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid rgb(165, 165, 165);
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.error-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.error-icon {
+    font-size: 50px;
+    color: rgb(206, 44, 44);
+    margin-right: 10px;
+}
+
+.error-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.error-subtitle {
+    font-size: 18px;
+    color: #666;
+}
+
+.home-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgb(160, 160, 160);
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+    background-color: #f0f2f5;
+}
+
+.home-icon {
+    max-width: 40px;
+}
