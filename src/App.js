@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -6,13 +7,15 @@ import AboutPage from "./pages/AboutPage";
 import ArticlesListPage from "./pages/ArticlesListPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/Navbar";
+import Breadcrumbs from "./components/BreadCrumbs";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <Navbar />
+        <Breadcrumbs />
         <div id="page-body">
-          <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/articles/:articleId" element={<ArticlePage />} />
