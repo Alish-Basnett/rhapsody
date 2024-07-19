@@ -1,0 +1,17 @@
+/* ArticlesList.css */
+
+.articles-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.article-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
