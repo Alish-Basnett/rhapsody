@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Typography, Input, Select, Row, Col } from "antd";
 import axios from "axios";
 import ArticlesList from "../components/ArticlesList";
+import Spinner from "../components/Spinner";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -12,6 +13,7 @@ const ArticlesListPage = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -19,8 +21,10 @@ const ArticlesListPage = () => {
         const res = await axios.get("/api/articles");
         setArticles(res.data);
         filterArticles(searchTerm, filter, res.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching articles:", error);
+        setIsLoading(false);
       }
     };
 
@@ -63,26 +67,26 @@ const ArticlesListPage = () => {
       <Row justify="center" style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={16} md={12}>
           <Search
-            placeholder="Search articles..."
+            placeholder="Search articles"
             enterButton
             onSearch={handleSearch}
-            style={{ marginBottom: "20px" }}
           />
         </Col>
-        <Col xs={24} sm={8} md={6}>
+        <Col xs={24} sm={8} md={6} style={{ textAlign: "right" }}>
           <Select
-            defaultValue="all"
-            style={{ width: "100%" }}
+            value={filter}
             onChange={handleFilterChange}
+            style={{ width: "100%" }}
           >
-            <Option value="all">All</Option>
-            <Option value="technology">Technology</Option>
+            <Option value="all">All Categories</Option>
+            <Option value="tech">Tech</Option>
             <Option value="health">Health</Option>
-            <Option value="travel">Travel</Option>
+            <Option value="sports">Sports</Option>
+            <Option value="finance">Finance</Option>
           </Select>
         </Col>
       </Row>
-      <ArticlesList articles={filteredArticles} />
+      {isLoading ? <Spinner /> : <ArticlesList articles={filteredArticles} />}
     </div>
   );
 };

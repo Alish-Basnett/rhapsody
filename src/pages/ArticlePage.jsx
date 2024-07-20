@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Spinner from "../components/Spinner";
 import NotFoundPage from "./NotFoundPage";
 import CommentsList from "../components/CommentsList";
 import AddComment from "../components/AddComment";
@@ -15,6 +16,7 @@ import {
   Modal,
   Form,
   Input,
+  Tooltip,
 } from "antd";
 import {
   LikeOutlined,
@@ -23,15 +25,20 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 
+import useUser from "../hooks/useUser";
+
 const { Title, Paragraph } = Typography;
 
 const ArticlePage = () => {
   const [articleInfo, setArticleInfo] = useState(null);
+  const [isLoadingArticle, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editField, setEditField] = useState("");
   const [editableContent, setEditableContent] = useState("");
   const [isEditingContent, setIsEditingContent] = useState(false);
   const { articleId } = useParams();
+
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
     const fetchArticleInfo = async () => {
@@ -39,10 +46,13 @@ const ArticlePage = () => {
         const res = await axios.get(`/api/articles/${articleId}`);
         setArticleInfo(res.data);
         setEditableContent(res.data.content);
+        setIsLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         console.error("Error fetching article:", error);
+        setIsLoading(false); // Set loading to false even if there is an error
       }
     };
+    console.log(user);
 
     fetchArticleInfo();
   }, [articleId]);
@@ -93,6 +103,10 @@ const ArticlePage = () => {
     setIsModalVisible(false);
   };
 
+  if (isLoadingArticle) {
+    return <Spinner />;
+  }
+
   if (!articleInfo) {
     return <NotFoundPage />;
   }
@@ -104,9 +118,17 @@ const ArticlePage = () => {
           <Card
             cover={<Image alt={articleInfo.title} src={articleInfo.imageUrl} />}
             actions={[
-              <Button icon={<LikeOutlined />} type="primary">
-                {articleInfo.upvotes} Upvote(s)
-              </Button>,
+              user ? (
+                <Button icon={<LikeOutlined />} type="primary">
+                  {articleInfo.upvotes} Upvote(s)
+                </Button>
+              ) : (
+                <Tooltip title="Login to upvote">
+                  <Button icon={<LikeOutlined />} type="default" disabled>
+                    {articleInfo.upvotes} Upvote(s)
+                  </Button>
+                </Tooltip>
+              ),
               !isEditingContent ? (
                 <Button
                   icon={<EditOutlined />}
@@ -133,13 +155,21 @@ const ArticlePage = () => {
                   </Button>
                 </Space>
               ),
-              <Button
-                icon={<EditOutlined />}
-                type="default"
-                onClick={handleEditImageClick}
-              >
-                Edit Image URL
-              </Button>,
+              user ? (
+                <Button
+                  icon={<EditOutlined />}
+                  type="default"
+                  onClick={handleEditImageClick}
+                >
+                  Edit Image URL
+                </Button>
+              ) : (
+                <Tooltip title="Login to edit image URL">
+                  <Button icon={<EditOutlined />} type="default" disabled>
+                    Edit Image URL
+                  </Button>
+                </Tooltip>
+              ),
             ]}
           >
             <Title>{articleInfo.title}</Title>
@@ -156,7 +186,15 @@ const ArticlePage = () => {
         </Col>
         <Col xs={24} md={8}>
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
-            <AddComment articleId={articleId} onAddComment={addComment} />
+            {user ? (
+              <AddComment articleId={articleId} onAddComment={addComment} />
+            ) : (
+              <Tooltip title="Login to comment">
+                <Button type="default" disabled>
+                  Add Comment
+                </Button>
+              </Tooltip>
+            )}
             <CommentsList comments={articleInfo.comments} />
           </Space>
         </Col>
