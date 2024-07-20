@@ -14,16 +14,20 @@ const { Title } = Typography;
 const Signup = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     const { email, password } = values;
+    setLoading(true); // Set loading to true when starting signup
     try {
       await createUserWithEmailAndPassword(getAuth(), email, password);
       setError(""); // Clear any previous errors
       navigate("/"); // Redirect to the home page upon successful signup
     } catch (e) {
       setError(e.message);
+    } finally {
+      setLoading(false); // Set loading to false after signup attempt
     }
   };
 
@@ -33,9 +37,9 @@ const Signup = () => {
 
   return (
     <div>
-      <Title level={2} style={{ textAlign: "center" }}>
+      {/* <Title level={2} style={{ textAlign: "center" }}>
         Signup
-      </Title>
+      </Title> */}
       <Form
         name="signup_form"
         onFinish={onFinish}
@@ -73,7 +77,21 @@ const Signup = () => {
         </Form.Item>
         <Form.Item
           name="confirm-password"
-          rules={[{ required: true, message: "Please confirm your password!" }]}
+          dependencies={["password"]}
+          hasFeedback
+          rules={[
+            { required: true, message: "Please confirm your password!" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("The two passwords that you entered do not match!")
+                );
+              },
+            }),
+          ]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
@@ -96,7 +114,7 @@ const Signup = () => {
           </Form.Item>
         )}
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Sign up
           </Button>
         </Form.Item>

@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, Card, Row, Col, Typography } from "antd";
 import { LoginOutlined, UserAddOutlined } from "@ant-design/icons";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
+import "../assets/styles/AuthPage.css";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const AuthPage = () => {
+  const [activeTab, setActiveTab] = useState("1");
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+  };
+
   return (
-    <Row justify="center" align="middle" style={{ minHeight: "80vh" }}>
+    <Row justify="center" align="middle" className="auth-page-container">
       <Col xs={24} sm={16} md={12} lg={8}>
         <Card>
           <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
             ℝ𝕙𝕒𝕡𝕤𝕠𝕕𝕪
           </Title>
-          <Tabs defaultActiveKey="1" centered>
+          <Tabs defaultActiveKey="1" centered onChange={handleTabChange}>
             <TabPane
               tab={
                 <span>
@@ -25,7 +32,13 @@ const AuthPage = () => {
               }
               key="1"
             >
-              <Login />
+              <div
+                className={`tab-content ${
+                  activeTab === "1" ? "fade-in" : "fade-out"
+                }`}
+              >
+                <Login />
+              </div>
             </TabPane>
             <TabPane
               tab={
@@ -36,7 +49,13 @@ const AuthPage = () => {
               }
               key="2"
             >
-              <Signup />
+              <div
+                className={`tab-content ${
+                  activeTab === "2" ? "fade-in" : "fade-out"
+                }`}
+              >
+                <Signup />
+              </div>
             </TabPane>
           </Tabs>
         </Card>

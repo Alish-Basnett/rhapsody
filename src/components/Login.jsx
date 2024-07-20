@@ -27,9 +27,9 @@ const Login = () => {
 
   return (
     <div>
-      <Title level={2} style={{ textAlign: "center" }}>
+      {/* <Title level={2} style={{ textAlign: "center" }}>
         Login
-      </Title>
+      </Title> */}
       <Form
         name="login_form"
         onFinish={onFinish}

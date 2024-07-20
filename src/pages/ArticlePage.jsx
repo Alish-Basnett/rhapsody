@@ -33,12 +33,11 @@ const ArticlePage = () => {
   const [articleInfo, setArticleInfo] = useState(null);
   const [isLoadingArticle, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editField, setEditField] = useState("");
   const [editableContent, setEditableContent] = useState("");
   const [isEditingContent, setIsEditingContent] = useState(false);
   const { articleId } = useParams();
 
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchArticleInfo = async () => {
@@ -52,7 +51,6 @@ const ArticlePage = () => {
         setIsLoading(false); // Set loading to false even if there is an error
       }
     };
-    console.log(user);
 
     fetchArticleInfo();
   }, [articleId]);
@@ -65,7 +63,6 @@ const ArticlePage = () => {
   };
 
   const handleEditImageClick = () => {
-    setEditField("imageUrl");
     setIsModalVisible(true);
   };
 
@@ -103,6 +100,23 @@ const ArticlePage = () => {
     setIsModalVisible(false);
   };
 
+  const handleUpvote = async () => {
+    try {
+      if (user && user.idToken) {
+        const response = await axios.put(
+          `/api/articles/${articleId}/upvote`,
+          {},
+          { headers: { Authorization: `Bearer ${user.idToken}` } }
+        );
+        setArticleInfo(response.data);
+      } else {
+        console.error("User is not logged in or token is missing.");
+      }
+    } catch (error) {
+      console.error("Error upvoting article:", error);
+    }
+  };
+
   if (isLoadingArticle) {
     return <Spinner />;
   }
@@ -119,7 +133,11 @@ const ArticlePage = () => {
             cover={<Image alt={articleInfo.title} src={articleInfo.imageUrl} />}
             actions={[
               user ? (
-                <Button icon={<LikeOutlined />} type="primary">
+                <Button
+                  icon={<LikeOutlined />}
+                  type="primary"
+                  onClick={handleUpvote}
+                >
                   {articleInfo.upvotes} Upvote(s)
                 </Button>
               ) : (

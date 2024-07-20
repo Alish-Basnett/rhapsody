@@ -1,0 +1,13 @@
+/* AuthPage.css */
+
+.row-transition {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.card-transition {
+  transition: transform 0.5s ease-in-out;
+}
+
+.card-transition:hover {
+  transform: scale(1.05);
+}
