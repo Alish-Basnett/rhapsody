@@ -23,10 +23,7 @@ const AddComment = ({ articleId, onAddComment }) => {
     try {
       const response = await axios.post(
         `/api/articles/${articleId}/comment`,
-        {
-          ...values,
-          postedBy: user.email, // Automatically set the postedBy field to the user's email
-        },
+        values,
         {
           headers: {
             Authorization: `Bearer ${user.idToken}`, // Send the token in the headers
@@ -35,7 +32,7 @@ const AddComment = ({ articleId, onAddComment }) => {
       );
       onAddComment({
         uid: user.uid,
-        postedBy: user.email, // Include the user's email in the comment
+        postedBy: values.postedBy,
         text: values.text,
       }); // Include the uid in the comment
       form.resetFields();
@@ -60,6 +57,13 @@ const AddComment = ({ articleId, onAddComment }) => {
         </Tooltip>
       ) : (
         <Form form={form} onFinish={onFinish} layout="vertical">
+          <Form.Item
+            name="postedBy"
+            label="Name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
+            <Input placeholder="Your name" />
+          </Form.Item>
           <Form.Item
             name="text"
             label="Comment"
