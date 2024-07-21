@@ -190,31 +190,25 @@ const ArticlePage = () => {
               ),
             ]}
           >
-            <Title>{articleInfo.title}</Title>
+            <Title level={2}>{articleInfo.title}</Title>
             {!isEditingContent ? (
               <Paragraph>{articleInfo.content}</Paragraph>
             ) : (
-              <Input.TextArea
-                value={editableContent}
-                onChange={(e) => setEditableContent(e.target.value)}
-                autoSize
-              />
+              <Form layout="vertical">
+                <Form.Item>
+                  <Input.TextArea
+                    rows={8}
+                    value={editableContent}
+                    onChange={(e) => setEditableContent(e.target.value)}
+                  />
+                </Form.Item>
+              </Form>
             )}
           </Card>
         </Col>
         <Col xs={24} md={8}>
-          <Space direction="vertical" size="large" style={{ width: "100%" }}>
-            {user ? (
-              <AddComment articleId={articleId} onAddComment={addComment} />
-            ) : (
-              <Tooltip title="Login to comment">
-                <Button type="default" disabled>
-                  Add Comment
-                </Button>
-              </Tooltip>
-            )}
-            <CommentsList comments={articleInfo.comments} />
-          </Space>
+          <AddComment articleId={articleId} onAddComment={addComment} />
+          <CommentsList comments={articleInfo.comments} />
         </Col>
       </Row>
 
@@ -227,9 +221,13 @@ const ArticlePage = () => {
         <Form layout="vertical" onFinish={handleOk}>
           <Form.Item
             name="imageUrl"
-            label="New Image URL"
+            label="Image URL"
+            initialValue={articleInfo.imageUrl}
             rules={[
-              { required: true, message: "Please enter the new image URL" },
+              {
+                required: true,
+                message: "Please enter the new image URL",
+              },
             ]}
           >
             <Input />
