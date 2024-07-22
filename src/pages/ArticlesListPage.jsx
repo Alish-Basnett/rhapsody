@@ -18,7 +18,7 @@ const ArticlesListPage = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axios.get("/api/articles");
+        const res = await axios.get("/.netlify/functions/getArticles");
         setArticles(res.data);
         filterArticles(searchTerm, filter, res.data);
         setIsLoading(false);

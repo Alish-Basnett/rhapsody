@@ -42,7 +42,9 @@ const ArticlePage = () => {
   useEffect(() => {
     const fetchArticleInfo = async () => {
       try {
-        const res = await axios.get(`/api/articles/${articleId}`);
+        const res = await axios.get(
+          `/.netlify/functions/getArticleById?articleId=${articleId}`
+        );
         setArticleInfo(res.data);
         setEditableContent(res.data.content);
         setIsLoading(false); // Set loading to false after data is fetched
@@ -68,9 +70,13 @@ const ArticlePage = () => {
 
   const handleSaveContent = async () => {
     try {
-      const response = await axios.put(`/api/articles/${articleId}/content`, {
-        content: editableContent,
-      });
+      const response = await axios.put(
+        `/.netlify/functions/updateArticleContent`,
+        {
+          articleId,
+          content: editableContent,
+        }
+      );
       setArticleInfo(response.data);
       setIsEditingContent(false);
     } catch (error) {
@@ -86,8 +92,11 @@ const ArticlePage = () => {
   const handleOk = async (values) => {
     try {
       const response = await axios.put(
-        `/api/articles/${articleId}/imageUrl`,
-        values
+        `/.netlify/functions/updateArticleImageUrl`,
+        {
+          articleId,
+          imageUrl: values.imageUrl,
+        }
       );
       setArticleInfo(response.data);
       setIsModalVisible(false);
@@ -104,8 +113,10 @@ const ArticlePage = () => {
     try {
       if (user && user.idToken) {
         const response = await axios.put(
-          `/api/articles/${articleId}/upvote`,
-          {},
+          `/.netlify/functions/upvoteArticle`,
+          {
+            articleId,
+          },
           { headers: { Authorization: `Bearer ${user.idToken}` } }
         );
         setArticleInfo(response.data);

@@ -22,10 +22,10 @@ const AddComment = ({ articleId, onAddComment }) => {
     setSubmitting(true);
     try {
       const response = await axios.post(
-        `/api/articles/${articleId}/comment`,
+        `/.netlify/functions/postComment`,
         {
-          ...values,
-          postedBy: user.email, // Automatically set the postedBy field to the user's email
+          articleId,
+          text: values.text,
         },
         {
           headers: {
@@ -43,7 +43,7 @@ const AddComment = ({ articleId, onAddComment }) => {
       console.error("Error adding comment:", error);
       notification.error({
         message: "Error",
-        description: error.response?.data || "Error adding comment",
+        description: error.response?.data?.error || "Error adding comment",
       });
     } finally {
       setSubmitting(false);
