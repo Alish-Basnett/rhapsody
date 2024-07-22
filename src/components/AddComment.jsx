@@ -22,11 +22,8 @@ const AddComment = ({ articleId, onAddComment }) => {
     setSubmitting(true);
     try {
       const response = await axios.post(
-        `/.netlify/functions/postComment`,
-        {
-          articleId,
-          text: values.text,
-        },
+        `/api/articles/${articleId}/comment`,
+        values,
         {
           headers: {
             Authorization: `Bearer ${user.idToken}`, // Send the token in the headers
@@ -35,7 +32,7 @@ const AddComment = ({ articleId, onAddComment }) => {
       );
       onAddComment({
         uid: user.uid,
-        postedBy: user.email, // Include the user's email in the comment
+        postedBy: values.postedBy,
         text: values.text,
       }); // Include the uid in the comment
       form.resetFields();
@@ -43,7 +40,7 @@ const AddComment = ({ articleId, onAddComment }) => {
       console.error("Error adding comment:", error);
       notification.error({
         message: "Error",
-        description: error.response?.data?.error || "Error adding comment",
+        description: error.response?.data || "Error adding comment",
       });
     } finally {
       setSubmitting(false);
@@ -60,6 +57,13 @@ const AddComment = ({ articleId, onAddComment }) => {
         </Tooltip>
       ) : (
         <Form form={form} onFinish={onFinish} layout="vertical">
+          <Form.Item
+            name="postedBy"
+            label="Name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
+            <Input placeholder="Your name" />
+          </Form.Item>
           <Form.Item
             name="text"
             label="Comment"
