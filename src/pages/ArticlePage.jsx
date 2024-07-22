@@ -24,7 +24,6 @@ import {
   SaveOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-
 import useUser from "../hooks/useUser";
 
 const { Title, Paragraph } = Typography;
@@ -36,24 +35,24 @@ const ArticlePage = () => {
   const [editableContent, setEditableContent] = useState("");
   const [isEditingContent, setIsEditingContent] = useState(false);
   const { articleId } = useParams();
-
   const { user } = useUser();
 
-  useEffect(() => {
-    const fetchArticleInfo = async () => {
-      try {
-        const res = await axios.get(
-          `/.netlify/functions/getArticleById?articleId=${articleId}`
-        );
-        setArticleInfo(res.data);
-        setEditableContent(res.data.content);
-        setIsLoading(false); // Set loading to false after data is fetched
-      } catch (error) {
-        console.error("Error fetching article:", error);
-        setIsLoading(false); // Set loading to false even if there is an error
-      }
-    };
+  // Function to fetch article info
+  const fetchArticleInfo = async () => {
+    try {
+      const res = await axios.get(
+        `/.netlify/functions/getArticleById?articleId=${articleId}`
+      );
+      setArticleInfo(res.data);
+      setEditableContent(res.data.content);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching article:", error);
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchArticleInfo();
   }, [articleId]);
 
@@ -112,14 +111,14 @@ const ArticlePage = () => {
   const handleUpvote = async () => {
     try {
       if (user && user.idToken) {
-        const response = await axios.put(
+        await axios.put(
           `/.netlify/functions/upvoteArticle`,
-          {
-            articleId,
-          },
+          { articleId },
           { headers: { Authorization: `Bearer ${user.idToken}` } }
         );
-        setArticleInfo(response.data);
+
+        // Refetch article info after upvoting
+        await fetchArticleInfo();
       } else {
         console.error("User is not logged in or token is missing.");
       }
@@ -216,30 +215,25 @@ const ArticlePage = () => {
               </Form>
             )}
           </Card>
-        </Col>
-        <Col xs={24} md={8}>
-          <AddComment articleId={articleId} onAddComment={addComment} />
           <CommentsList comments={articleInfo.comments} />
+          <AddComment
+            articleId={articleId}
+            addComment={addComment}
+            user={user}
+          />
         </Col>
       </Row>
-
       <Modal
         title="Edit Image URL"
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
-        <Form layout="vertical" onFinish={handleOk}>
+        <Form onFinish={handleOk} layout="vertical">
           <Form.Item
             name="imageUrl"
             label="Image URL"
             initialValue={articleInfo.imageUrl}
-            rules={[
-              {
-                required: true,
-                message: "Please enter the new image URL",
-              },
-            ]}
           >
             <Input />
           </Form.Item>
