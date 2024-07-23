@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Typography, Row, Col, Card, Divider, Carousel, Spin } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Typography, Divider, Carousel, Spin, Button } from "antd";
 import axios from "axios";
 import "../assets/styles/HomePage.css"; // For custom styles
 
@@ -8,6 +8,8 @@ const { Title, Paragraph } = Typography;
 const HomePage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef(null);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -24,6 +26,22 @@ const HomePage = () => {
     fetchArticles();
   }, []);
 
+  const handleBeforeChange = (from, to) => {
+    setCurrentSlide(to);
+  };
+
+  const goToPrev = () => {
+    if (carouselRef.current) {
+      carouselRef.current.prev();
+    }
+  };
+
+  const goToNext = () => {
+    if (carouselRef.current) {
+      carouselRef.current.next();
+    }
+  };
+
   if (loading) {
     return <Spin size="large" style={{ display: "block", margin: "auto" }} />;
   }
@@ -32,13 +50,21 @@ const HomePage = () => {
     <div className="homepage-container">
       <Divider />
 
-      <Carousel autoplay>
+      <Carousel
+        autoplay
+        ref={carouselRef}
+        beforeChange={handleBeforeChange}
+        dots={false} // Hide default dots
+        arrows={false} // Hide default arrows
+      >
         {articles.map((article) => (
           <div key={article._id} className="carousel-item">
             <div
               className="carousel-image"
               style={{
                 backgroundImage: `url(${article.imageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             >
               <div className="carousel-content">
@@ -53,6 +79,12 @@ const HomePage = () => {
           </div>
         ))}
       </Carousel>
+
+      {/* Custom Controls */}
+      <div className="carousel-controls">
+        <Button onClick={goToPrev}>&lt;</Button>
+        <Button onClick={goToNext}>&gt;</Button>
+      </div>
 
       <Divider />
     </div>
