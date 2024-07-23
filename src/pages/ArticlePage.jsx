@@ -17,12 +17,14 @@ import {
   Form,
   Input,
   Tooltip,
+  Upload,
 } from "antd";
 import {
   LikeOutlined,
   EditOutlined,
   SaveOutlined,
   CloseOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 
 import useUser from "../hooks/useUser";
@@ -35,6 +37,7 @@ const ArticlePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editableContent, setEditableContent] = useState("");
   const [isEditingContent, setIsEditingContent] = useState(false);
+  const [fileList, setFileList] = useState([]);
   const { articleId } = useParams();
 
   const { user } = useUser();
@@ -83,16 +86,24 @@ const ArticlePage = () => {
     setIsEditingContent(false);
   };
 
-  const handleOk = async (values) => {
+  const handleOk = async () => {
+    const formData = new FormData();
+    formData.append("image", fileList[0]);
+
     try {
       const response = await axios.put(
         `/api/articles/${articleId}/imageUrl`,
-        values
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       setArticleInfo(response.data);
       setIsModalVisible(false);
     } catch (error) {
-      console.error("Error updating article image URL:", error);
+      console.error("Error updating article image:", error);
     }
   };
 
@@ -115,6 +126,17 @@ const ArticlePage = () => {
     } catch (error) {
       console.error("Error upvoting article:", error);
     }
+  };
+
+  const uploadProps = {
+    onRemove: (file) => {
+      setFileList([]);
+    },
+    beforeUpload: (file) => {
+      setFileList([file]);
+      return false;
+    },
+    fileList,
   };
 
   if (isLoadingArticle) {
@@ -219,18 +241,10 @@ const ArticlePage = () => {
         footer={null}
       >
         <Form layout="vertical" onFinish={handleOk}>
-          <Form.Item
-            name="imageUrl"
-            label="Image URL"
-            initialValue={articleInfo.imageUrl}
-            rules={[
-              {
-                required: true,
-                message: "Please enter the new image URL",
-              },
-            ]}
-          >
-            <Input />
+          <Form.Item>
+            <Upload {...uploadProps}>
+              <Button icon={<UploadOutlined />}>Select File</Button>
+            </Upload>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
