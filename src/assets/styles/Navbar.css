@@ -1,0 +1,62 @@
+/* General styles for navbar */
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background-color: white;
+  color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  /* Ensure the navbar stays above other content */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Optional: adds a shadow for better separation */
+  justify-content: space-between;
+  /* Ensure items are spaced between */
+}
+
+.navbar-logo {
+  height: 30px;
+  margin-right: 20px;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.navbar-search {
+  width: 300px;
+  margin-right: 20px;
+}
+
+.navbar-language {
+  width: 100px;
+  margin-right: 20px;
+}
+
+.navbar-mobile-menu-button {
+  display: none;
+  /* Hidden by default */
+}
+
+/* Media queries for responsiveness */
+
+@media (max-width: 768px) {
+  .navbar-container {
+    justify-content: space-between;
+    padding: 12px 20px;
+  }
+  .navbar-menu {
+    display: none;
+    /* Hide the menu for mobile view */
+  }
+  .navbar-mobile-menu-button {
+    display: block;
+    /* Show the menu button for mobile view */
+  }
+}

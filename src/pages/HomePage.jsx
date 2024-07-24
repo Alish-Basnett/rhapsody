@@ -44,7 +44,7 @@ const HomePage = () => {
             ref={carouselRef}
             beforeChange={handleBeforeChange}
             dots={false} // Hide default dots
-            arrows={true} // Hide default arrows
+            arrows={false} // Hide default arrows
           >
             {articles.map((article) => (
               <div key={article._id} className="carousel-item">
@@ -107,7 +107,7 @@ const HomePage = () => {
               ></div>
               <div className="featured-article-content">
                 <Title level={5}>{article.title}</Title>
-                <Paragraph>{article.content.substring(0, 100)}...</Paragraph>
+                <Paragraph>{article.content.substring(0, 70)}...</Paragraph>
                 <div className="featured-article-meta">
                   <div>{article.author}</div>
                   <div>

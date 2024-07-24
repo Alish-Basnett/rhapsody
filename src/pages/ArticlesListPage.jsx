@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Input, Select, Row, Col } from "antd";
+import { Typography, Input, Row, Col, Card, Tag } from "antd";
 import axios from "axios";
-import ArticlesList from "../components/ArticlesList";
 import Spinner from "../components/Spinner";
+import "../assets/styles/ArticleListPage.css";
 
 const { Title } = Typography;
 const { Search } = Input;
-const { Option } = Select;
+
+const categories = ["all", "tech", "health", "sports", "finance"];
 
 const ArticlesListPage = () => {
   const [articles, setArticles] = useState([]);
@@ -60,33 +61,60 @@ const ArticlesListPage = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-      <Title level={1} style={{ textAlign: "center", marginBottom: "40px" }}>
-        Articles
-      </Title>
-      <Row justify="center" style={{ marginBottom: "20px" }}>
+    <div className="articles-page-container">
+      <Row justify="center" className="search-filter-row">
         <Col xs={24} sm={16} md={12}>
           <Search
             placeholder="Search articles"
             enterButton
             onSearch={handleSearch}
+            className="search-bar"
           />
         </Col>
-        <Col xs={24} sm={8} md={6} style={{ textAlign: "right" }}>
-          <Select
-            value={filter}
-            onChange={handleFilterChange}
-            style={{ width: "100%" }}
-          >
-            <Option value="all">All Categories</Option>
-            <Option value="tech">Tech</Option>
-            <Option value="health">Health</Option>
-            <Option value="sports">Sports</Option>
-            <Option value="finance">Finance</Option>
-          </Select>
-        </Col>
       </Row>
-      {isLoading ? <Spinner /> : <ArticlesList articles={filteredArticles} />}
+      <div className="categories-menu">
+        {categories.map((category) => (
+          <Tag
+            key={category}
+            className={`category-tag ${filter === category ? "active" : ""}`}
+            onClick={() => handleFilterChange(category)}
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </Tag>
+        ))}
+      </div>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Row gutter={[16, 16]} className="articles-list">
+          {filteredArticles.map((article) => (
+            <Col
+              key={article._id}
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              className="article-col"
+            >
+              <Card
+                hoverable
+                cover={<img alt={article.title} src={article.imageUrl} />}
+                className="article-card"
+              >
+                <Card.Meta
+                  title={article.title}
+                  description={article.content.substring(0, 100) + "..."}
+                />
+                <div className="article-meta">
+                  <span>{article.author}</span>
+                  <span>{article.publicationDate}</span>
+                  <span>{article.minsRead} mins read</span>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

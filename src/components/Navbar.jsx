@@ -1,15 +1,32 @@
-import React from "react";
-import { Menu, Input, Select, Button } from "antd";
+import React, { useState } from "react";
+import { Menu, Input, Select, Button, Dropdown, Space } from "antd";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import useUser from "../hooks/useUser";
-import { GlobalOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  GlobalOutlined,
+  SearchOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
 import rhapsodyLogo from "../assets/images/rhapsody-main-logo.png";
+import "../assets/styles/Navbar.css"; // Ensure to import the CSS file
 
 const { Option } = Select;
 
 const Navbar = () => {
   const { user, setUser } = useUser();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  useState(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -20,85 +37,110 @@ const Navbar = () => {
     }
   };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "0 20px",
-        marginBottom: "300px",
-        backgroundColor: "white",
-        color: "black",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000, // Ensure the navbar stays above other content
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // Optional: adds a shadow for better separation
-      }}
-    >
-      {/* Logo */}
-      <img
-        src={rhapsodyLogo}
-        alt="Rhapsody Logo"
-        style={{ height: "30px", marginRight: "20px" }}
-      />
-
-      {/* Menu Links */}
-      <Menu
-        mode="horizontal"
-        theme="light"
-        style={{
-          flex: 1,
-          borderBottom: "none",
-          lineHeight: "64px",
-          marginBottom: "0",
-        }}
-      >
-        <Menu.Item key="home">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="articles">
-          <Link to="/articles">Articles</Link>
-        </Menu.Item>
-        <Menu.Item key="about">
-          <Link to="/about">About</Link>
-        </Menu.Item>
-      </Menu>
-
-      {/* Search Box */}
-      <Input
-        placeholder="Search articles"
-        prefix={<SearchOutlined />}
-        style={{ width: 300, marginRight: "20px" }}
-      />
-
-      {/* Language Selector */}
-      <Select
-        defaultValue="EN"
-        style={{ width: 100, marginRight: "20px" }}
-        suffixIcon={<GlobalOutlined />}
-      >
-        <Option value="EN">EN</Option>
-        <Option value="FR">FR</Option>
-        <Option value="ES">ES</Option>
-        {/* Add more language options as needed */}
-      </Select>
-
-      {/* Auth Links */}
+  const mobileMenu = (
+    <Menu>
+      <Menu.Item key="home">
+        <Link to="/">Home</Link>
+      </Menu.Item>
+      <Menu.Item key="articles">
+        <Link to="/articles">Articles</Link>
+      </Menu.Item>
+      <Menu.Item key="about">
+        <Link to="/about">About</Link>
+      </Menu.Item>
       {user ? (
-        <Button type="link" onClick={handleLogout}>
+        <Menu.Item key="logout" onClick={handleLogout}>
           Logout
-        </Button>
+        </Menu.Item>
       ) : (
         <>
-          <Button type="link">
+          <Menu.Item key="login">
             <Link to="/auth">Login</Link>
-          </Button>
-          <Button type="link">
+          </Menu.Item>
+          <Menu.Item key="signup">
             <Link to="/auth">Sign Up</Link>
-          </Button>
+          </Menu.Item>
         </>
+      )}
+    </Menu>
+  );
+
+  return (
+    <div className="navbar-container">
+      {/* Logo */}
+      <Link to="/">
+        <img src={rhapsodyLogo} alt="Rhapsody Logo" className="navbar-logo" />
+      </Link>
+
+      {/* Menu Links */}
+      {!isMobile && (
+        <>
+          <Menu
+            mode="horizontal"
+            theme="light"
+            className="navbar-menu"
+            style={{
+              flex: 1,
+              borderBottom: "none",
+              lineHeight: "64px",
+              marginBottom: "0",
+            }}
+          >
+            <Menu.Item key="home">
+              <Link to="/">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="articles">
+              <Link to="/articles">Articles</Link>
+            </Menu.Item>
+            <Menu.Item key="about">
+              <Link to="/about">About</Link>
+            </Menu.Item>
+          </Menu>
+
+          {/* Search Box */}
+          <Input
+            placeholder="Search articles"
+            prefix={<SearchOutlined />}
+            className="navbar-search"
+          />
+
+          {/* Language Selector */}
+          <Select
+            defaultValue="EN"
+            className="navbar-language"
+            suffixIcon={<GlobalOutlined />}
+          >
+            <Option value="EN">EN</Option>
+            <Option value="FR">FR</Option>
+            <Option value="ES">ES</Option>
+            {/* Add more language options as needed */}
+          </Select>
+
+          {/* Auth Links */}
+          {user ? (
+            <Button type="link" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button type="link">
+                <Link to="/auth">Login</Link>
+              </Button>
+              <Button type="link">
+                <Link to="/auth">Sign Up</Link>
+              </Button>
+            </>
+          )}
+        </>
+      )}
+
+      {isMobile && (
+        <Dropdown overlay={mobileMenu} trigger={["click"]}>
+          <Button
+            icon={<MenuOutlined />}
+            className="navbar-mobile-menu-button"
+          />
+        </Dropdown>
       )}
     </div>
   );

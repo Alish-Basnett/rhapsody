@@ -9,6 +9,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/Navbar";
 import Breadcrumbs from "./components/BreadCrumbs";
 import AuthPage from "./pages/AuthPage";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </BrowserRouter>
   );

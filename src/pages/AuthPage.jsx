@@ -19,9 +19,6 @@ const AuthPage = () => {
     <Row justify="center" align="middle" className="auth-page-container">
       <Col xs={24} sm={16} md={12} lg={8}>
         <Card>
-          <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
-            ℝ𝕙𝕒𝕡𝕤𝕠𝕕𝕪
-          </Title>
           <Tabs defaultActiveKey="1" centered onChange={handleTabChange}>
             <TabPane
               tab={
