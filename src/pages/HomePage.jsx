@@ -67,6 +67,15 @@ const HomePage = () => {
                     </div>
                   </div>
                 </div>
+                {/* Information below the image for mobile view */}
+                <div className="carousel-mobile-info">
+                  <Title level={4}>{article.title}</Title>
+                  <div className="carousel-author">{article.author}</div>
+                  <div className="carousel-date">
+                    {article.publicationDate} <span className="dot">•</span>{" "}
+                    {article.minsRead}
+                  </div>
+                </div>
               </div>
             ))}
           </Carousel>
