@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Typography, Divider, Carousel, Spin, Button } from "antd";
+import { Typography, Divider, Carousel, Spin } from "antd";
 import axios from "axios";
 import "../assets/styles/HomePage.css"; // For custom styles
 
@@ -30,18 +30,6 @@ const HomePage = () => {
     setCurrentSlide(to);
   };
 
-  const goToPrev = () => {
-    if (carouselRef.current) {
-      carouselRef.current.prev();
-    }
-  };
-
-  const goToNext = () => {
-    if (carouselRef.current) {
-      carouselRef.current.next();
-    }
-  };
-
   if (loading) {
     return <Spin size="large" style={{ display: "block", margin: "auto" }} />;
   }
@@ -49,43 +37,80 @@ const HomePage = () => {
   return (
     <div className="homepage-container">
       <Divider />
+      <div className="carousel-featured-container">
+        <div className="carousel-section">
+          <Carousel
+            autoplay
+            ref={carouselRef}
+            beforeChange={handleBeforeChange}
+            dots={false} // Hide default dots
+            arrows={true} // Hide default arrows
+          >
+            {articles.map((article) => (
+              <div key={article._id} className="carousel-item">
+                <div
+                  className="carousel-image"
+                  style={{
+                    backgroundImage: `url(${article.imageUrl})`,
+                  }}
+                >
+                  <div className="carousel-content">
+                    <Title level={3} style={{ color: "white" }}>
+                      {article.title}
+                    </Title>
+                  </div>
+                  <div className="carousel-author-date">
+                    <div className="carousel-author">{article.author}</div>
+                    <div className="carousel-date">
+                      {article.publicationDate} <span className="dot">•</span>{" "}
+                      {article.minsRead}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Carousel>
+          {/* Dots Container */}
+          <div className="carousel-dots-container">
+            {articles.map((_, index) => (
+              <div
+                key={index}
+                className={`carousel-dot ${
+                  index === currentSlide ? "active" : ""
+                }`}
+                onClick={() => carouselRef.current.goTo(index)}
+              />
+            ))}
+          </div>
+        </div>
 
-      <Carousel
-        autoplay
-        ref={carouselRef}
-        beforeChange={handleBeforeChange}
-        dots={false} // Hide default dots
-        arrows={false} // Hide default arrows
-      >
-        {articles.map((article) => (
-          <div key={article._id} className="carousel-item">
-            <div
-              className="carousel-image"
-              style={{
-                backgroundImage: `url(${article.imageUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            >
-              <div className="carousel-content">
-                <Title level={3} style={{ color: "white" }}>
-                  {article.title}
-                </Title>
-                <Paragraph style={{ color: "white" }}>
-                  {article.content.substring(0, 100)}...
-                </Paragraph>
+        <div className="featured-section">
+          <Title level={3} className="featured-heading">
+            Featured Articles
+          </Title>
+          {articles.map((article) => (
+            <div key={article._id} className="featured-article">
+              <div
+                className="featured-article-image"
+                style={{
+                  backgroundImage: `url(${article.imageUrl})`,
+                }}
+              ></div>
+              <div className="featured-article-content">
+                <Title level={5}>{article.title}</Title>
+                <Paragraph>{article.content.substring(0, 100)}...</Paragraph>
+                <div className="featured-article-meta">
+                  <div>{article.author}</div>
+                  <div>
+                    {article.publicationDate} <span className="dot">•</span>{" "}
+                    {article.minsRead}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </Carousel>
-
-      {/* Custom Controls */}
-      <div className="carousel-controls">
-        <Button onClick={goToPrev}>&lt;</Button>
-        <Button onClick={goToNext}>&gt;</Button>
+          ))}
+        </div>
       </div>
-
       <Divider />
     </div>
   );

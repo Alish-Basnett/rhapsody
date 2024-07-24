@@ -26,8 +26,15 @@ const Navbar = () => {
         display: "flex",
         alignItems: "center",
         padding: "0 20px",
+        marginBottom: "300px",
         backgroundColor: "white",
         color: "black",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000, // Ensure the navbar stays above other content
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // Optional: adds a shadow for better separation
       }}
     >
       {/* Logo */}
@@ -86,10 +93,10 @@ const Navbar = () => {
       ) : (
         <>
           <Button type="link">
-            <Link to="/login">Login</Link>
+            <Link to="/auth">Login</Link>
           </Button>
           <Button type="link">
-            <Link to="/signup">Sign Up</Link>
+            <Link to="/auth">Sign Up</Link>
           </Button>
         </>
       )}

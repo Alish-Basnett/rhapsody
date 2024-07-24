@@ -15,7 +15,7 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <Navbar />
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
         <div id="page-body">
           <Routes>
             <Route path="/" element={<HomePage />} />
