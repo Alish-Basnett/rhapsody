@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Typography, Divider, Carousel, Spin } from "antd";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/styles/HomePage.css"; // For custom styles
 
@@ -10,6 +11,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -30,6 +32,10 @@ const HomePage = () => {
     setCurrentSlide(to);
   };
 
+  const handleArticleClick = (articleId) => {
+    navigate(`/articles/${articleId}`);
+  };
+
   if (loading) {
     return <Spin size="large" style={{ display: "block", margin: "auto" }} />;
   }
@@ -47,7 +53,11 @@ const HomePage = () => {
             arrows={false} // Hide default arrows
           >
             {articles.map((article) => (
-              <div key={article._id} className="carousel-item">
+              <div
+                key={article._id}
+                className="carousel-item"
+                onClick={() => handleArticleClick(article._id)}
+              >
                 <div
                   className="carousel-image"
                   style={{
@@ -98,7 +108,11 @@ const HomePage = () => {
             Featured Articles
           </Title>
           {articles.map((article) => (
-            <div key={article._id} className="featured-article">
+            <div
+              key={article._id}
+              className="featured-article"
+              onClick={() => handleArticleClick(article._id)}
+            >
               <div
                 className="featured-article-image"
                 style={{

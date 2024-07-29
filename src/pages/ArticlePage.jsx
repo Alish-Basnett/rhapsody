@@ -40,15 +40,17 @@ const ArticlePage = () => {
   const { user } = useUser();
 
   useEffect(() => {
+    console.log("Fetching article with ID:", articleId); // Debug log
     const fetchArticleInfo = async () => {
       try {
         const res = await axios.get(`/api/articles/${articleId}`);
+        console.log("Fetched article data:", res.data); // Debug log
         setArticleInfo(res.data);
         setEditableContent(res.data.content);
-        setIsLoading(false); // Set loading to false after data is fetched
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching article:", error);
-        setIsLoading(false); // Set loading to false even if there is an error
+        setIsLoading(false);
       }
     };
 

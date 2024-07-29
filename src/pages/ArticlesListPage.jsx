@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Typography, Input, Row, Col, Card, Tag } from "antd";
 import axios from "axios";
 import Spinner from "../components/Spinner";
@@ -96,21 +97,23 @@ const ArticlesListPage = () => {
               lg={6}
               className="article-col"
             >
-              <Card
-                hoverable
-                cover={<img alt={article.title} src={article.imageUrl} />}
-                className="article-card"
-              >
-                <Card.Meta
-                  title={article.title}
-                  description={article.content.substring(0, 100) + "..."}
-                />
-                <div className="article-meta">
-                  <span>{article.author}</span>
-                  <span>{article.publicationDate}</span>
-                  <span>{article.minsRead} mins read</span>
-                </div>
-              </Card>
+              <Link to={`/articles/${article._id}`}>
+                <Card
+                  hoverable
+                  cover={<img alt={article.title} src={article.imageUrl} />}
+                  className="article-card"
+                >
+                  <Card.Meta
+                    title={article.title}
+                    description={article.content.substring(0, 100) + "..."}
+                  />
+                  <div className="article-meta">
+                    <span>{article.author}</span>
+                    <span>{article.publicationDate}</span>
+                    <span>{article.minsRead} mins read</span>
+                  </div>
+                </Card>
+              </Link>
             </Col>
           ))}
         </Row>
