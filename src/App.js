@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import Breadcrumbs from "./components/BreadCrumbs";
 import AuthPage from "./pages/AuthPage";
 import Footer from "./components/Footer";
+import PostArticle from "./pages/PostArticle";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/articles/:articleId" element={<ArticlePage />} />
             <Route path="/articles" element={<ArticlesListPage />} />
+            <Route path="/write" element={<PostArticle />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="*" element={<NotFoundPage />} />
